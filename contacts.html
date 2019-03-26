@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Contacts</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular-route.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
+
+    <style>
+
+        body {color:#343434; font-size:16px; font-family:'Open Sans', sans-serif; background:#F6F6F6;}
+        a {color:inherit; font-size:inherit; text-decoration:none;}
+
+        input {display:block; width:calc(100% - 14px); border:1px solid #DDD; line-height:32px; height:32px; margin:0 0 18px 0; padding:0 6px;}
+        textarea {display:block; width:calc(100% - 14px); border:1px solid #DDD; line-height:16px; height:48px; margin:0 0 18px 0; padding:0 6px;}
+        label {font-size:.8em;}
+        button {margin: 18px 0 0 0; background:#9DEDA3; border-radius:3px; border:0; padding:8px 16px; box-shadow:0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);}
+
+        .navigation-bar {width:86%; max-width:600px; margin:0 auto 60px; }
+        .navigation-bar .tit {float:left; line-height:48px; height:48px; padding:0; margin:0; font-size:2.6em; font-weight:300;}
+        .navigation-bar ul {list-style:none; float:left; padding:0; margin:0 0 0 60px;}
+        .navigation-bar ul li {display:inline-block; padding:0 20px; margin:0; line-height:48px; height:48px; border-left:1px solid #DDD;}
+        .navigation-bar ul li:first-child {border-left:0;}
+        .navigation-bar ul li.act {display:inline-block;}
+        .navigation-bar:after {clear:both; content:""; display:block;}
+
+        .box {width:86%; max-width:600px; margin:0 auto; padding:20px; box-shadow:0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2); background:#FFF;}
+        .box:after {clear:both; content:""; display:block;}
+        .box .tit {line-height:48px; min-height:48px; padding:0 0 20px 0; margin:0 0 40px 0; border-bottom:1px solid #DDD; font-size:1.6em; font-weight:300; text-align:center;}
+
+        .box .contacts {width:30%; float:left;}
+        .box .contacts h3 {line-height:48px; height:48px; margin:0 0 24px 0; padding:0;}
+        .box .contacts input {width:calc(100% - 14px); margin:0 0 24px 0;}
+        .box .contacts .contact {height:34px; line-height:34px; border-top:1px solid #DDD; display:block;}
+        .box .contacts .contact:nth-child(3) {border-top:0;}
+        .box .contacts .contact_sel {background:#FFFBAF;}
+
+        .box .card {width:66%; padding:0 0 0 4%; float:left;}
+        .box .card .in {border-left:1px solid #DDD; padding:0 0 0 4%;}
+
+        .box .card .in .card_contact {}
+        .box .card .in .card_contact h3 {line-height:48px; height:48px; margin:0 0 24px 0; padding:0;}
+        .box .card .in .card_contact span {font-size:1em; margin:0 8px 0 0;}
+
+        .box .card .in .alert_removed {background:#A7D195; line-height:60px; height:60px; margin:0 0 40px 0; text-align:center;}
+
+
+        @media (max-width:600px) {
+            .box .contacts {width:unset; float:unset;}
+            .box .contacts h3 {display:none;}
+            .box .contacts .contact:nth-child(3) {border-top:initial;}
+            .box .card {width:unset; float:unset; padding:0;}
+            .box .card .in {border:4px solid #DDD; padding:20px; margin:20px 0 0;}
+        }
+
+        @media (max-width:560px) {
+            .navigation-bar {text-align:center;}
+            .navigation-bar .tit {float:unset;}
+            .navigation-bar ul {float:unset; margin:0 auto;}
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div ng-app="MyContacts">
+
+        <!-- nav section -->
+        <nav class="navigation-bar" ng-controller="navigation-bar">
+            <a href="#" class="tit">My Contacts</a>
+            <ul>
+                <li ng-repeat="navLink in nav.navItems" ng-class="{act : $index === nav.selected}">
+                    <a class="text-center" ng-click="nav.navClick($index)" ng-href="#/{{navLink}}">{{navLink}}</a>
+                </li>
+            </ul>
+        </nav>
+
+
+        <div class="box" ng-controller="Home">
+            <h2 class="tit">Contact List - AngularJs Example</h2>
+            <div class="contacts">
+                <h3>Contacts:</h3>
+                <input placeholder="Search box" type="text" ng-model="search">
+                <contact class="contact" ng-repeat="contact in vet_contacts | orderBy: ['name', 'email', 'identification'] | filter: search "></contact>
+            </div>
+            <div class="card">
+                <div class="in" ng-view></div>
+            </div>
+        </div>
+
+
+        <script type="text/ng-template" id="contact.html">
+            <a ng-href="#/contact/{{vet_contacts.indexOf(contact)}}" ng-class="{contact_sel : contact.id == selected_contact.id}">{{contact.name}}</a>
+        </script>
+
+
+        <script type="text/ng-template" id="default.html">
+            <div ng-if="$root.removed != ''" class="alert_removed"> {{$root.removed}}</div>
+            <div>Select a contact on the left panel</div>
+        </script>
+
+
+        <script type="text/ng-template" id="contact_info.html">
+            <div class="card_contact">
+                <h3>{{selected_contact.name}}</h3>
+                <span>Email:</span>
+                <a ng-href="{{selected_contact.email}}">{{selected_contact.email}}</a><br>
+
+                <span>Phone:</span>
+                {{selected_contact.tel}}<br>
+
+                <span>Identification:</span>
+                <a ng-href="{{selected_contact.identification}}">{{selected_contact.identification}}</a><br><br>
+
+                <span>Annotation:</span><br>
+                {{selected_contact.notes}}<br>
+
+                <a ng-href="#/edit/{{vet_contacts.indexOf(selected_contact)}}">
+                    <button class="btn btn-default">Editar</button>
+                </a>
+                <a href="#/">
+                    <button ng-click="removeContact(selected_contact)">Remove</button>
+                </a>
+            </div>
+        </script>
+
+
+        <script type="text/ng-template" id="contact_form.html">
+            <div class="card_contact" ng-controller="AddContact">
+                <label for="name">Nome: </label>
+                <input id="name" class="form-control" type="text" ng-model="selected_contact.name">
+
+                <label for="email">Email:</label>
+                <input id="email" class="form-control" type="text" ng-model="selected_contact.email">
+
+                <label for="tel">Phone:</label>
+                <input id="tel" class="form-control" type="text" ng-model="selected_contact.tel">
+
+                <label for="identification">Identification:</label>
+                <input id="identification" class="form-control" type="text" ng-model="selected_contact.identification">
+
+                <label for="notes">Annotation:</label><br>
+                <textarea id="notes" rows="3" ng-model="selected_contact.notes"></textarea>
+
+                <a ng-if="path === '/Insert'" ng-href="#/contact/{{vet_contacts.length - 1}}" ng-click="AddContact()">
+                    <button>Insert</button>
+                </a>
+                <a ng-if="path !== '/Insert'" ng-href="#/contact/{{index}}">
+                    <button>Salvar</button>
+                </a>
+                <a href="#/">
+                    <button>Cancel</button>
+                </a>
+            </div>
+        </script>
+
+    </div>
+
+    <script src="contacts.js"></script>
+
+</body>
+</html>

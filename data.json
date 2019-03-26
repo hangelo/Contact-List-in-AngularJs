@@ -1,0 +1,23 @@
+[
+	{
+		"name": "Ned Stark",
+		"email": "ned@winterfell.com",
+		"phone": "236-994-9950",
+		"identification": "123456-789012",
+		"notes": "Good start"
+	},
+	{
+		"name": "Tyrion Lannster",
+		"email": "tyrion@lannister.com",
+		"phone": "236-994-9950",
+		"identification": "123456-789012",
+		"notes": "My favorite for the iron throne"
+	},
+	{
+		"name": "Hodor",
+		"email": "hodor@hodor.com",
+		"phone": "236-994-9950",
+		"identification": "123456-789012",
+		"notes": "Hold the door!"
+	}
+]
